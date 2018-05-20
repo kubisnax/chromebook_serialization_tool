@@ -97,6 +97,8 @@ echo "Enter 1 to Finish or 2 to Restart: "
       echo "1) Finish"
       echo "2) Restart";;
       
+      * ) echo -e "\e[31mInvalid Input\e[0m";;
+      
     esac
     
   done
