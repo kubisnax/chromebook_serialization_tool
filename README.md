@@ -1,5 +1,5 @@
 # chromebook_serialization_tool
-The Chromebook Serialization Tool (CST) was created to simplify the process of applying custom serial numbers to Chromebook devices. This is an open-source project written in Bash and can be run via the developer terminal on any Chromebook device. 
+The Chromebook Serialization Tool (CST) was created to simplify the process of applying custom serial numbers to Chromebook devices. This is an open-source project written in bash and can be run via the developer terminal on any Chromebook device. 
 
 Instructions for Use:
 1.	Enable & boot to Developer Mode on target device.
