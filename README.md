@@ -5,7 +5,7 @@ Instructions for Use:
 1.	Enable & boot to Developer Mode on target device.
 2.	Insert USB containing CST.
 3.	Enter Browse as Guest to allow USB device to mount properly
-4.	Enter developer shell with Ctrl+Alt+        keys pressed simultaneously. 
+4.	Enter developer shell with Ctrl+Alt+Forward Arrow (F2) keys pressed simultaneously. 
 5.	Login as user chronos
 6.	Enter command sudu su
 7.	Enter command /bin/bash /media/removable/$USB cst.sh
