@@ -1,12 +1,12 @@
 #!/bin/bash
 
 getSerial() {
-  (vpd -l | grep -w "serial_number" | tr -d "serial_number" | tr -d "=" | tr -d '""')
+  (vpd -g "serial_number")
   #pulls serial number from vpd and displays only the serial number
 }
 
 getServiceTag() {
-  (vpd -l | grep -w "service_tag" | tr -d "service_tag" | tr -d "=" | tr -d '""')
+  (vpd -g "service_tag")
   #pulls service tag from vpd and only displays the service tag
 }
 
@@ -68,6 +68,8 @@ cleanUp() {
   vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null #deletes stable_device_secret_DO_NOT_SHARE, sends output to /dev/null/
 
   dump_vpd_log --force --full --stdout &> /dev/null# #dumps vpd logs, sends output to /dev/null/
+  
+  vpd -d "Product_S/N" &> /dev/null/ #deletes product_S/N, sends output to /dev/null/ (implented for Samsung xe303)
 
   shutdown -r 0 #reboots device
   
