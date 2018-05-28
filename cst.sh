@@ -6,7 +6,7 @@ getSerial() {
 }
 
 getServiceTag() {
-  (vpd -g "service_tag")
+  (vpd -g "service_tag" 2> /dev/null )
   #pulls service tag from vpd and only displays the service tag
 }
 
