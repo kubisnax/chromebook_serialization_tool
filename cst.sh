@@ -26,7 +26,7 @@ serialize() {
       
       echo ""
         
-      echo "Enter custom Serial Number & Service Tag: "
+      echo "Enter custom Serial Number & Service Tag then press Enter : "
 
       read -e custSerial #takes custom serial number entered by user
       
