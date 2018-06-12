@@ -8,7 +8,7 @@ Instructions for Use:
 4.	Enter developer shell with Ctrl+Alt+Forward Arrow (F2) keys pressed simultaneously. 
 5.	Login as user chronos
 6.	Enter command sudo su
-7.	Enter command /bin/bash /media/removable/$USB/cst.sh
+7.	Enter command bash /media/removable/$USB/cst.sh
 </br>(CST will then display the current serial number as well as service tag if applicable.)
 8.	User will be prompted to then enter their custom serial number i.e. KKAAA999T3
 9.	User will be prompted to enter 1 to finish the process or enter 2 to restart the process.
