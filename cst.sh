@@ -6,17 +6,21 @@ getSerial() {
 }
 
 getServiceTag() {
-  (vpd -g "service_tag" 2> /dev/null )
+  (vpd -g "service_tag" 2> /dev/null)
   #pulls service tag from vpd and only displays the service tag
 }
 
+
+
+serialNumber=$(getSerial)
+
+serviceTag=$(getServiceTag)
+
 serialize() {
-  if [ -n "$serviceTag" ]; #determines if a service tag is present 
+  if [ -n "$serviceTag" ]; #determines if a service tag is present
     then
       
       echo "Current Serial Number is $(getSerial)"
-      
-      echo ""
       
       echo "Current Service Tag is $(getServiceTag)"
       
@@ -25,6 +29,8 @@ serialize() {
       echo "Enter custom Serial Number & Service Tag: "
 
       read -e custSerial #takes custom serial number entered by user
+      
+      vpd -O &> /dev/null #Overwrites VPD, clearing old SN & ST
 
       vpd -s "serial_number"="$custSerial" #writes custom serial number to device
       
@@ -37,15 +43,18 @@ serialize() {
       echo ""
       
       echo "Service Tag is now $(getServiceTag)"
-      
+  
     else
+      
       echo "Current Serial Number is: $(getSerial)" #Used if there is no service tag on device
       
       echo ""
   
-      echo "Enter custom Serial Number : "
+      echo "Enter custom Serial Number then press Enter : "
 
       read -e custSerial #takes custom serial number entered by user
+      
+      vdp -O &> /dev/null #Overwrites VPD, clearing old SN
 
       vpd -s "serial_number"="$custSerial" #writes custom serial number to device
   
@@ -61,23 +70,13 @@ cleanUp() {
   
   echo "Cleaning up and rebooting... "
 
-  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null/
-
-  vpd -d "mlb_serial_number" &> /dev/null #deletes mlb_serial_number, sends output to /dev/null/
-
-  vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null #deletes stable_device_secret_DO_NOT_SHARE, sends output to /dev/null/
-
-  dump_vpd_log --force --full --stdout &> /dev/null# #dumps vpd logs, sends output to /dev/null/
-  
-  vpd -d "Product_S/N" &> /dev/null/ #deletes product_S/N, sends output to /dev/null/ (implented for Samsung xe303)
+  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null
 
   shutdown -r 0 #reboots device
   
+  exit 0
+  
 }
-
-serialNumber=$(getSerial)
-
-serviceTag=$(getServiceTag)
 
 while true; do
 
@@ -108,7 +107,4 @@ echo "Enter 1 to Finish or 2 to Restart: "
   
 done
   
-
-
-#Written by Kyle Kubiak for the Trinity3 RMA team :)
   
