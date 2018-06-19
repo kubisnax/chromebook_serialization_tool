@@ -6,11 +6,9 @@ getSerial() {
 }
 
 getServiceTag() {
-  (vpd -g "service_tag" 2> /dev/null)
+  (vpd -g "service_tag" 2> /dev/null )
   #pulls service tag from vpd and only displays the service tag
 }
-
-
 
 serialNumber=$(getSerial)
 
@@ -26,11 +24,9 @@ serialize() {
       
       echo ""
         
-      echo "Enter custom Serial Number & Service Tag then press Enter : "
+      echo "Enter custom Serial Number & Service Tag then press Enter key to continue: "
 
       read -e custSerial #takes custom serial number entered by user
-      
-      vpd -O &> /dev/null #Overwrites VPD, clearing old SN & ST
 
       vpd -s "serial_number"="$custSerial" #writes custom serial number to device
       
@@ -50,11 +46,9 @@ serialize() {
       
       echo ""
   
-      echo "Enter custom Serial Number then press Enter : "
+      echo "Enter custom Serial Number then press Enter key to continue: "
 
       read -e custSerial #takes custom serial number entered by user
-      
-      vdp -O &> /dev/null #Overwrites VPD, clearing old SN
 
       vpd -s "serial_number"="$custSerial" #writes custom serial number to device
   
@@ -70,13 +64,20 @@ cleanUp() {
   
   echo "Cleaning up and rebooting... "
 
-  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null
+  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null/
 
+  vpd -d "mlb_serial_number" -d "stable_device_secret_DO_NOT_SHARE" -d "Product_S/N" &> /dev/null #deletes mlb_serial_number, stable_device_secret & Product_S/N then sends output to /dev/null/
+
+  vpd -i "RW_VPD" -s "check_enrollment"="0" -s "block_devmode"="0" -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null #Breaks FRE
+
+  dump_vpd_log --force &> /dev/null #dumps vpd logs, sends output to /dev/null/
+  
   shutdown -r 0 #reboots device
   
   exit 0
   
 }
+
 
 while true; do
 
@@ -106,5 +107,5 @@ echo "Enter 1 to Finish or 2 to Restart: "
   
   
 done
-  
+
   
