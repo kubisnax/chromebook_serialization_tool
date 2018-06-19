@@ -64,11 +64,17 @@ cleanUp() {
   
   echo "Cleaning up and rebooting... "
 
-  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null
+  /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null/
 
-  vpd -d "mlb_serial_number" -d "stable_device_secret_DO_NOT_SHARE" -d "Product_S/N" &> /dev/null #deletes mlb_serial_number, stable_device_secret & Product_S/N then sends output to /dev/null/
+  vpd -d "mlb_serial_number" &> /dev/null
+  vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null
+  vpd -d "Product_S/N" &> /dev/null
+    #deletes mlb_serial_number, stable_device_secret & Product_S/N then sends output to /dev/null/
 
-  vpd -i "RW_VPD" -s "check_enrollment"="0" -s "block_devmode"="0" -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null #Breaks FRE
+  vpd -i "RW_VPD" -s "check_enrollment"="0" &> /dev/null
+  vpd -s "block_devmode"="0" &> /dev/null
+  vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null
+    #Breaks FRE
 
   dump_vpd_log --force &> /dev/null #dumps vpd logs, sends output to /dev/null/
   
