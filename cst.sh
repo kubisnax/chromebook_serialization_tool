@@ -67,12 +67,11 @@ cleanUp() {
   /usr/share/vboot/bin/set_gbb_flags.sh 0 &> /dev/null #sets gbb_flags to 0x0, sends output to /dev/null/
 
   vpd -d "mlb_serial_number" &> /dev/null
-  vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null
   vpd -d "Product_S/N" &> /dev/null
     #deletes mlb_serial_number, stable_device_secret & Product_S/N then sends output to /dev/null/
 
   vpd -i "RW_VPD" -s "check_enrollment"="0" &> /dev/null
-  vpd -s "block_devmode"="0" &> /dev/null
+  vpd -i "RW_VPD" -s "block_devmode"="0" &> /dev/null
   vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null
     #Breaks FRE
 
