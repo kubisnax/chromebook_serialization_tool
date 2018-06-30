@@ -73,6 +73,7 @@ cleanUp() {
   vpd -i "RW_VPD" -s "check_enrollment"="0" &> /dev/null
   vpd -i "RW_VPD" -s "block_devmode"="0" &> /dev/null
   vpd -d "stable_device_secret_DO_NOT_SHARE" &> /dev/null
+  crossystem clear_tpm_owner_request=1
     #Breaks FRE
 
   dump_vpd_log --force &> /dev/null #dumps vpd logs, sends output to /dev/null/
