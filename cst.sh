@@ -15,17 +15,45 @@ getADID() {
   #pulls attested device ID from vpd and only displays the ADID
 }
 
+getWPStatus() {
+  (crossystem wpsw_cur 2> /dev/null )
+  #pulls Write Protect status and checks if enabled
+  }
+  
+  
+  function echo_red()
+{
+    echo -e "\E[0;31m$1"
+    echo -e '\e[0m'
+}
+
+  function exit_red()
+{
+    echo_red "$@"
+    read -ep "Please remove write protect screw or disconnect battery while connected to external power. Press [ENTER] to try again"   
+}
+
 serialNumber=$(getSerial)
 
 serviceTag=$(getServiceTag)
 
 ADID=$(getADID)
 
+wpEnabled=$(getWPStatus)
+
 serialize() {
+
+#Check WP status
+  [[ "$wpEnabled" = 1 ]] && { exit_red  "\nHardware write-protect enabled, cannot set Serial Number."; exit 1; }
+  
+#disable Software Write Protect
+  flashrom -p host --wp-disable
+  flashrom -p ec --wp-disable
+   
   if [ -n "$serviceTag" ]; #determines if a service tag is present
     then
       
-      echo "Current Serial Number is $(getSerial)"
+         echo "Current Serial Number is $(getSerial)"
       
       echo "Current Service Tag is $(getServiceTag)"
       
@@ -50,7 +78,7 @@ serialize() {
   else
     if [ -n "$ADID" ]; #determines if an ADID is present
     then
-      
+           
       echo "Current Serial Number is $(getSerial)"
       
       echo "Current Attested Device ID is $(getADID)"
@@ -146,6 +174,6 @@ echo "Enter 1 to Finish or 2 to Restart: "
   done
   
   
-done
 
+done
   
