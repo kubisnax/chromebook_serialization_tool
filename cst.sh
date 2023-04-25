@@ -10,15 +10,50 @@ getServiceTag() {
   #pulls service tag from vpd and only displays the service tag
 }
 
+getADID() {
+  (vpd -g "attested_device_id" 2> /dev/null )
+  #pulls attested device ID from vpd and only displays the ADID
+}
+
+getWPStatus() {
+  (crossystem wpsw_cur 2> /dev/null )
+  #pulls Write Protect status and checks if enabled
+  }
+  
+  
+  function echo_red()
+{
+    echo -e "\E[0;31m$1"
+    echo -e '\e[0m'
+}
+
+  function exit_red()
+{
+    echo_red "$@"
+    read -ep "Please remove write protect screw or disconnect battery while connected to external power. Press [ENTER] to try again"   
+}
+
 serialNumber=$(getSerial)
 
 serviceTag=$(getServiceTag)
 
+ADID=$(getADID)
+
+wpEnabled=$(getWPStatus)
+
 serialize() {
+
+#Check WP status
+  [[ "$wpEnabled" = 1 ]] && { exit_red  "\nHardware write-protect enabled, cannot set Serial Number."; exit 1; }
+  
+#disable Software Write Protect
+  flashrom -p host --wp-disable
+  flashrom -p ec --wp-disable
+   
   if [ -n "$serviceTag" ]; #determines if a service tag is present
     then
       
-      echo "Current Serial Number is $(getSerial)"
+         echo "Current Serial Number is $(getSerial)"
       
       echo "Current Service Tag is $(getServiceTag)"
       
@@ -39,10 +74,36 @@ serialize() {
       echo ""
       
       echo "Service Tag is now $(getServiceTag)"
+      
+  else
+    if [ -n "$ADID" ]; #determines if an ADID is present
+    then
+           
+      echo "Current Serial Number is $(getSerial)"
+      
+      echo "Current Attested Device ID is $(getADID)"
+      
+      echo ""
+        
+      echo "Enter custom Serial Number & Attested Device ID then press Enter key to continue: "
+
+      read -e custSerial #takes custom serial number entered by user
+
+      vpd -s "serial_number"="$custSerial" #writes custom serial number to device
+      
+      vpd -s "attested_device_id"="$custSerial" #writes custom serial to device under ADID
+        
+      echo ""
+
+      echo "Serial Number is now $(getSerial)"
+      
+      echo ""
+      
+      echo "Attested Device ID is now $(getADID)"
   
     else
       
-      echo "Current Serial Number is: $(getSerial)" #Used if there is no service tag on device
+      echo "Current Serial Number is: $(getSerial)" #Used if there is no service tag or ADID on device
       
       echo ""
   
@@ -55,6 +116,7 @@ serialize() {
       echo ""
 
       echo "Serial Number is now: $(getSerial)"
+    fi
   fi
 }
 
@@ -112,6 +174,6 @@ echo "Enter 1 to Finish or 2 to Restart: "
   done
   
   
-done
 
+done
   
